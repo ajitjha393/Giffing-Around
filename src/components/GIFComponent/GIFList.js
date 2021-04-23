@@ -6,6 +6,8 @@ import GIFItem from './GIFItem'
 
 const BASE_URL = 'https://api.giphy.com/v1'
 
+const corsImageProxy = 'https://cors-anywhere.herokuapp.com/'
+
 const tags = [
 	'cola',
 	'kebab',
@@ -31,45 +33,53 @@ function getRandomTag() {
 	return tags[randomIndex]
 }
 
+let classifier = null
+
 function GIFList() {
 	const [gifs, setGifs] = useState([])
 
-	useEffect(() => {
-		const classifyImg = gifUrl => {
-			const classifier = ml5.imageClassifier('MobileNet', modelLoaded)
+	useEffect(
+		() => {
+			const getRandomGIF = async () => {
+				const randomTag = getRandomTag()
+				console.log(randomTag)
+
+				const res = await axios.get(
+					`${BASE_URL}/gifs/random?api_key=${process.env.REACT_APP_GIPHY_API_KEY}&rating=G&tag=${randomTag}`
+				)
+
+				console.log(res)
+				const gifUrl = res.data.data.image_url
+				console.log(gifUrl)
+				// classifyImg(gifUrl)
+
+				setGifs(prevgifs => prevgifs.concat(gifUrl))
+			}
+
 			function modelLoaded() {
 				console.log('Model Loaded!')
+				getRandomGIF()
 			}
+
 			// Put the image to classify inside a variable
+			classifier = ml5.imageClassifier('MobileNet', modelLoaded)
+		},
 
-			const gifImage = <video src={gifUrl} loop muted autoPlay />
-			// Make a prediction with a selected image
-			classifier.predict(gifImage, function (err, results) {
-				// print the result in the console
-				console.log(results)
-			})
-		}
-		const getRandomGIF = async () => {
-			const randomTag = getRandomTag()
-			console.log(randomTag)
-
-			const res = await axios.get(
-				`${BASE_URL}/gifs/random?api_key=${process.env.REACT_APP_GIPHY_API_KEY}&rating=G&tag=${randomTag}`
-			)
-
-			console.log(res)
-			const gifUrl = res.data.data.image_mp4_url
-			console.log(gifUrl)
-			// classifyImg(gifUrl)
-
-			setGifs(prevgifs => prevgifs.concat(gifUrl))
-		}
-		getRandomGIF()
-	}, [])
+		// getRandomGIF()
+		[]
+	)
 
 	return (
 		<div>
-			{gifs.length && gifs.map((gif, i) => <GIFItem gifUrl={gif} index={i} key={new Date().toISOString()} />)}
+			{gifs.length &&
+				gifs.map((gif, i) => (
+					<GIFItem
+						gifUrl={gif}
+						index={i}
+						key={new Date().toISOString()}
+						classifier={classifier}
+					/>
+				))}
 		</div>
 	)
 }
