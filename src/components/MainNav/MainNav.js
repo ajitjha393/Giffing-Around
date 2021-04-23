@@ -3,9 +3,9 @@ function MainNav() {
 		<header>
 			<nav>
 				<div className="nav-wrapper">
-					<a href="#" class="brand-logo">
+					<article href="/" className="brand-logo center">
 						GIFFING AROUND 🍢
-					</a>
+					</article>
 				</div>
 			</nav>
 		</header>
