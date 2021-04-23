@@ -1,19 +1,35 @@
 import { useEffect } from 'react'
 
+function getLabels(classification) {
+	return classification.reduce((tags, result) => {
+		return tags.concat(result.label.split(', '))
+	}, [])
+}
+
 function GIFItem({ gifUrl, index, classifier }) {
 	useEffect(() => {
-		if (!classifier) {
-			const ImageElement = document.getElementById('gif-' + index)
-			ImageElement.addEventListener('load', () => {
-				classifier.classify(imageElement, (err, results) => {
-					const labels = getLabels(results)
-					console.log(labels)
-				})
+		console.log(classifier)
+		if (classifier) {
+			const imageElement = document.getElementById('gif-' + index)
+
+			imageElement.addEventListener('load', () => {
+                console.log('Loaded')
+			classifier.classify(imageElement, (err, results) => {
+				const labels = getLabels(results)
+				console.log(labels)
+			})
 			})
 		}
-	}, [classifier])
+	}, [])
 
-	return <img id={'gif-' + index} src={gifUrl} alt="Funny Giffy kebab" />
+	return (
+		<img
+			id={'gif-' + index}
+			src={gifUrl}
+			alt="Funny Giffy kebab"
+			crossOrigin="anonymous"
+		/>
+	)
 }
 
 export default GIFItem

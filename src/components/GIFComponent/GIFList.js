@@ -20,14 +20,6 @@ const tags = [
 	'wasps',
 ]
 
-/** AI Reecognition of Gif */
-function modelLoaded() {
-	console.log('Model Loaded!')
-}
-
-// Initialize the Image Classifier method with MobileNet
-const classifier = ml5.imageClassifier('MobileNet', modelLoaded)
-
 function getRandomTag() {
 	const randomIndex = Math.floor(Math.random() * tags.length)
 	return tags[randomIndex]
@@ -37,6 +29,7 @@ let classifier = null
 
 function GIFList() {
 	const [gifs, setGifs] = useState([])
+	const [classifier, setClassifier] = useState(null)
 
 	useEffect(
 		() => {
@@ -62,7 +55,10 @@ function GIFList() {
 			}
 
 			// Put the image to classify inside a variable
-			classifier = ml5.imageClassifier('MobileNet', modelLoaded)
+			ml5.imageClassifier('MobileNet').then(csf => {
+				modelLoaded()
+				setClassifier(csf)
+			})
 		},
 
 		// getRandomGIF()
@@ -74,7 +70,7 @@ function GIFList() {
 			{gifs.length &&
 				gifs.map((gif, i) => (
 					<GIFItem
-						gifUrl={gif}
+						gifUrl={`${corsImageProxy}${gif}`}
 						index={i}
 						key={new Date().toISOString()}
 						classifier={classifier}
