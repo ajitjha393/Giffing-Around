@@ -1,8 +1,12 @@
-import logo from './logo.svg'
+import MainNav from './components/MainNav/MainNav'
 import './App.css'
 
 function App() {
-	return <div>Welcome to My Giffing App</div>
+	return (
+		<section>
+			<MainNav />
+		</section>
+	)
 }
 
 export default App
