@@ -25,8 +25,6 @@ function getRandomTag() {
 	return tags[randomIndex]
 }
 
-let classifier = null
-
 function GIFList() {
 	const [gifs, setGifs] = useState([])
 	const [classifier, setClassifier] = useState(null)
@@ -55,10 +53,7 @@ function GIFList() {
 			}
 
 			// Put the image to classify inside a variable
-			ml5.imageClassifier('MobileNet').then(csf => {
-				modelLoaded()
-				setClassifier(csf)
-			})
+			setClassifier(ml5.imageClassifier('MobileNet', modelLoaded))
 		},
 
 		// getRandomGIF()

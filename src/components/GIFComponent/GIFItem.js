@@ -11,16 +11,16 @@ function GIFItem({ gifUrl, index, classifier }) {
 		console.log(classifier)
 		if (classifier) {
 			const imageElement = document.getElementById('gif-' + index)
-
+			console.log(imageElement)
 			imageElement.addEventListener('load', () => {
-                console.log('Loaded')
-			classifier.classify(imageElement, (err, results) => {
-				const labels = getLabels(results)
-				console.log(labels)
-			})
+				console.log('Loaded')
+				/*classifier.classify(imageElement, (err, results) => {
+					const labels = getLabels(results)
+					console.log(labels)
+				})*/
 			})
 		}
-	}, [])
+	}, [classifier, index])
 
 	return (
 		<img
